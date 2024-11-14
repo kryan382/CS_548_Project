@@ -2,6 +2,8 @@
 """
 Created on Wed Nov 13 21:00:51 2024
 
+Simple file to determine which features are chosen first, data for report
+
 @author: kevry
 """
 
