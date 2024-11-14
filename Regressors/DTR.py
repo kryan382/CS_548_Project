@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Nov 13 23:48:49 2024
+Created on Thu Nov 14 09:47:57 2024
 
 @author: kevry
 """
@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split, cross_val_score, RepeatedKFold
 from sklearn.metrics import make_scorer
-from sklearn.neighbors import KNeighborsRegressor
+from sklearn.tree import DecisionTreeRegressor
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.feature_selection import SelectKBest, f_regression
 #%% Initilization 
@@ -20,11 +20,11 @@ file_path = "C:/Homework Assignments/MachineLearning548/Final Project/PythonCode
 MovieData = pd.read_csv(file_path)
 
 # Define X and y
-X = MovieData[['actor_1', 'actor_2', 'actor_3', 'director', 'genre_1', 'genre_2', 'genre_3', 'studio_1', 'studio_2', 'studio_3', 'studio_4']]
+X = MovieData[['actor_1', 'actor_2', 'actor_3', 'director', 'studio_1', 'studio_2', 'studio_3', 'studio_4']]
 y = MovieData['rating']
 
 # Feature selection
-selector = SelectKBest(f_regression, k=11)
+selector = SelectKBest(f_regression, k=8)
 X = selector.fit_transform(X, y)
 
 # Split data into training and testing sets
@@ -64,10 +64,10 @@ trial = 0
 a_20values = []
 mae_values = []
 #%% Test
-for neighbor in range(1,101):
-    knn = KNeighborsRegressor(n_neighbors=neighbor, weights='distance')
+for depth in range(1,16):
+    dtr = DecisionTreeRegressor(max_depth=depth,random_state=17,criterion='squared_error',)
     cv_scores = RepeatedKFold(n_splits=5, n_repeats = 3, random_state = 8)
-    Accuracy_Values = cross_val_score(knn, X_train, y_train, cv = cv_scores, scoring = custom_Scoring)
+    Accuracy_Values = cross_val_score(dtr, X_train, y_train, cv = cv_scores, scoring = custom_Scoring)
     trial = trial +1
         
     mape_values.append(Accuracy_Values)
@@ -77,7 +77,7 @@ for neighbor in range(1,101):
     
     #Running cross validation
     CV = RepeatedKFold(n_splits = 5, n_repeats=3, random_state = 8)
-    Accuracy_Values2 = cross_val_score(knn,X_train ,y_train,\
+    Accuracy_Values2 = cross_val_score(dtr,X_train ,y_train,\
                                        cv=CV,scoring=custom_Scoring2)
     mae_values.append(Accuracy_Values2)
     print('\n"MAE index" for 5-fold Cross Validation:\n', Accuracy_Values2)
@@ -86,7 +86,7 @@ for neighbor in range(1,101):
 
     #Running cross validation
     CV = RepeatedKFold(n_splits = 5, n_repeats=3, random_state = 8)
-    Accuracy_Values3 = cross_val_score(knn,X_train ,y_train,\
+    Accuracy_Values3 = cross_val_score(dtr,X_train ,y_train,\
                                        cv=CV,scoring=custom_Scoring3)
     a_20values.append(Accuracy_Values3)
     print('\n"a_20 index" for 5-fold Cross Validation:\n', Accuracy_Values3)

@@ -15,28 +15,16 @@ from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.metrics import make_scorer
 
-# Load the dataset
-file_path = "C:/Homework Assignments/MachineLearning548/Final Project/Dataset/MoviesDataset_Filtered.csv"
+#%% Initilization 
+# Define the file path to your encoded dataset
+file_path = "C:/Homework Assignments/MachineLearning548/Final Project/PythonCode/CSV/MoviesDataset_Encoded.csv"
+
+# Load the data
 MovieData = pd.read_csv(file_path)
 
-# Define the target and drop unnecessary columns
-target = 'rating'
-MovieData = MovieData.drop(columns=['id', 'date', 'minute'])
-
-# Apply count encoding to categorical columns
-for column in ['top_actors', 'director', 'studios', 'genres']:
-    if column in MovieData.columns:
-        MovieData[f"{column}_count"] = MovieData[column].apply(lambda x: len(str(x).split(', ')) if pd.notna(x) else 0)
-
-# Drop the original categorical columns after encoding
-MovieData = MovieData.drop(columns=['top_actors', 'director', 'studios', 'genres'])
-
-# Define input features X and target y
-X = MovieData.drop(columns=[target])
-y = MovieData[target]
-
-# Ensure only numeric columns remain in X
-X = X.select_dtypes(include=[np.number])
+# Define X and y
+X = MovieData[['actor_1', 'actor_2', 'actor_3', 'director', 'genre_1', 'genre_2', 'genre_3', 'studio_1', 'studio_2', 'studio_3', 'studio_4']]
+y = MovieData['rating']  
 
 # Check if any non-numeric columns were accidentally retained
 if X.shape[1] < MovieData.shape[1] - 1:
@@ -77,7 +65,7 @@ custom_Scoring3 = make_scorer(Accuracy_score3, greater_is_better=True)
 selected_features_dict = {}
 
 # Iterate over k values from 1 to 9
-for k in range(1, 5):
+for k in range(1, 11):
     selector = SelectKBest(f_regression, k=k)
     X_new = selector.fit_transform(X_normalized, y)
 
@@ -95,7 +83,7 @@ df_selected_features = pd.DataFrame.from_dict(selected_features_dict, orient='in
 df_selected_features = df_selected_features.apply(lambda x: pd.Series(x.dropna().values))
 
 # Export the selected features table to Excel
-export_path = "C:/Homework Assignments/MachineLearning548/Final Project/Dataset/Selected_Features.xlsx"
+export_path = "C:/Homework Assignments/MachineLearning548/Final Project/Dataset/New_Features.xlsx"
 with pd.ExcelWriter(export_path, mode='a', engine='openpyxl') as writer:
     df_selected_features.to_excel(writer, sheet_name='Selected_Features', index=False)
 

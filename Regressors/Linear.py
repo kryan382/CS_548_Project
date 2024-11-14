@@ -22,11 +22,11 @@ file_path = "C:/Homework Assignments/MachineLearning548/Final Project/PythonCode
 MovieData = pd.read_csv(file_path)
 
 # Define X and y
-X = MovieData[['actor_1', 'actor_2', 'actor_3', 'director', 'genre_1', 'genre_2', 'genre_3', 'studio_1', 'studio_2', 'studio_3', 'studio_4']]
-y = MovieData['rating']  # Assuming 'rating' is the column name for the target variable
+X = MovieData[['actor_1', 'director', 'genre_1', 'studio_1']]
+y = MovieData['rating']  
 
 # Feature selection
-selector = SelectKBest(f_regression, k=11)
+selector = SelectKBest(f_regression, k=1)
 X = selector.fit_transform(X, y)
 
 # Split data into training and testing sets
