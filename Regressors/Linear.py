@@ -22,8 +22,11 @@ file_path = "C:/Homework Assignments/MachineLearning548/Final Project/PythonCode
 MovieData = pd.read_csv(file_path)
 
 # Define X and y
-X = MovieData[['actor_1', 'director', 'genre_1', 'studio_1','studio_2','studio_3','genre_2','genre_3','actor_2','actor_3']]
+X = MovieData[['actor_1', 'director', 'genre_1', 'studio_1','studio_2','studio_3','genre_2','genre_3','actor_2','actor_3','studio_4']]
 y = MovieData['rating']  
+
+#Log y
+y = np.log10(y)
 
 # Feature selection
 selector = SelectKBest(f_regression, k=10)
@@ -33,6 +36,9 @@ X = selector.fit_transform(X, y)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=12)
 #%% Scorers
 def Accuracy_score(orig, pred):
+    orig = 10 ** orig
+    pred = 10** pred
+    
     orig = np.array(orig)
     pred = np.array(pred)
     
@@ -40,10 +46,16 @@ def Accuracy_score(orig, pred):
     return mape
 
 def Accuracy_score2(orig,pred):
+    orig = 10 ** orig
+    pred = 10** pred
+    
     MAE = np.mean((np.abs(orig-pred)))
     return(MAE)
 
 def Accuracy_score3(orig, pred):
+    orig = 10 ** orig
+    pred = 10** pred
+    
     orig = np.array(orig)
     pred = np.array(pred)
 
