@@ -24,7 +24,7 @@ X = MovieData[['actor_1', 'actor_2', 'actor_3', 'director', 'genre_1', 'genre_2'
 y = MovieData['rating']
 
 # Feature selection
-selector = SelectKBest(f_regression, k=11)
+selector = SelectKBest(f_regression, k=10)
 X = selector.fit_transform(X, y)
 
 # Split data into training and testing sets
@@ -64,7 +64,7 @@ trial = 0
 a_20values = []
 mae_values = []
 #%% Test
-for neighbor in range(1,101):
+for neighbor in range(1,26):
     knn = KNeighborsRegressor(n_neighbors=neighbor, weights='distance')
     cv_scores = RepeatedKFold(n_splits=5, n_repeats = 3, random_state = 8)
     Accuracy_Values = cross_val_score(knn, X_train, y_train, cv = cv_scores, scoring = custom_Scoring)
@@ -91,3 +91,21 @@ for neighbor in range(1,101):
     a_20values.append(Accuracy_Values3)
     print('\n"a_20 index" for 5-fold Cross Validation:\n', Accuracy_Values3)
     print('\nFinal Average Accuracy a_20 index of the model:', round(Accuracy_Values3.mean(),4))
+    
+#%% Export
+#MAPE
+df_metrics = pd.DataFrame(mape_values, index=range(1, 26), columns=range(1, 16))   
+
+#MAE
+df_metricsMAE = pd.DataFrame(mae_values, index=range(1, 26), columns=range(1, 16))   
+
+#A20
+df_metricsA20 = pd.DataFrame(a_20values, index=range(1, 26), columns=range(1, 16))   
+    
+file_path = "C:/spydertest/csv/CumulRot.xlsx"
+
+#Export the DataFrame to an Excel file on a specific sheet
+with pd.ExcelWriter(file_path, mode='a', engine='openpyxl') as writer:
+    df_metrics.to_excel(writer, sheet_name='KNNtrainMAPE', index=False, startrow=0, startcol=0)
+    df_metricsMAE.to_excel(writer, sheet_name='KNNtrainMAE', index=False, startrow=0, startcol=0)
+    df_metricsA20.to_excel(writer, sheet_name='KNNtrainA20', index=False, startrow=0, startcol=0)

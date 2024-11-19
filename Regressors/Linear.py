@@ -22,11 +22,11 @@ file_path = "C:/Homework Assignments/MachineLearning548/Final Project/PythonCode
 MovieData = pd.read_csv(file_path)
 
 # Define X and y
-X = MovieData[['actor_1', 'director', 'genre_1', 'studio_1']]
+X = MovieData[['actor_1', 'director', 'genre_1', 'studio_1','studio_2','studio_3','genre_2','genre_3','actor_2','actor_3']]
 y = MovieData['rating']  
 
 # Feature selection
-selector = SelectKBest(f_regression, k=1)
+selector = SelectKBest(f_regression, k=10)
 X = selector.fit_transform(X, y)
 
 # Split data into training and testing sets
@@ -98,3 +98,23 @@ Accuracy_Values2 = cross_val_score(lr,X_train ,y_train,\
 mae_values.append(Accuracy_Values2)
 print('\n"MAE index" for 5-fold Cross Validation:\n', Accuracy_Values2)
 print('\nFinal Average Accuracy MAE index of the model:', round(Accuracy_Values2.mean(),4))
+
+#%% Export
+#MAPE
+df_metrics = pd.DataFrame(mape_values, index=range(1, 2), columns=range(1, 16))   
+
+#MAE
+df_metricsMAE = pd.DataFrame(mae_values, index=range(1, 2), columns=range(1, 16))   
+
+#A20
+df_metricsA20 = pd.DataFrame(a_20values, index=range(1, 2), columns=range(1, 16))   
+    
+file_path = "C:/spydertest/csv/CumulRot.xlsx"
+
+#Export the DataFrame to an Excel file on a specific sheet
+with pd.ExcelWriter(file_path, mode='a', engine='openpyxl') as writer:
+    df_metrics.to_excel(writer, sheet_name='LNRtrainMAPE', index=False, startrow=0, startcol=0)
+    df_metricsMAE.to_excel(writer, sheet_name='LNRtrainMAE', index=False, startrow=0, startcol=0)
+    df_metricsA20.to_excel(writer, sheet_name='LNRtrainA20', index=False, startrow=0, startcol=0)
+    
+print("\nSuccesfully Exported to Excel!")

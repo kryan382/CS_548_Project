@@ -43,7 +43,7 @@ rfr = RandomForestRegressor(n_estimators=25, random_state=17, max_depth=9)
 gbr = GradientBoostingRegressor(max_depth=8,random_state=17,n_estimators=50,learning_rate=0.1)
 
 #Which regressor is being used IMPORTANT *****
-regressor = gbr
+regressor = lnr
 #%% Test and analysis
 
 # Train the model
@@ -94,6 +94,31 @@ print("MAPE:",mape)
 print("RSME:", rmse)
 print("A_20:", a_20)
 
-print("Y_test\n",y_test)
+# print("Y_test\n",y_test)
 # print("The number of values in y_test",len(y_test))
-print("Y_pred",y_pred)
+# print("Y_pred",y_pred)
+
+#%% Export to excel Actual vs expected
+
+
+  ## Expected vs avtual dataframe
+results_df = pd.DataFrame({
+    'Expected/Test': y_test,
+    'Predicted': y_pred
+})
+
+file_path = "C:/spydertest/csv/CumulRot.xlsx"
+
+# # Export to Excel
+if regressor == lnr:
+    sheet_name = 'LNRExpected'
+elif regressor == knn:
+    sheet_name = 'KNNExpected'
+elif regressor == rfr:
+    sheet_name = 'RFRExpected'
+elif regressor == gbr:
+    sheet_name = 'GBRExpected'
+    
+results_df.to_excel("results.xlsx", index=False)
+with pd.ExcelWriter(file_path, mode='a', engine='openpyxl') as writer:
+    results_df.to_excel(writer, sheet_name, index=False, startrow=0, startcol=0)
