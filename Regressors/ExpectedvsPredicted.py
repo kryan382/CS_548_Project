@@ -42,10 +42,10 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_
 lnr = LinearRegression()
 knn = KNeighborsRegressor(n_neighbors=10, weights='distance')
 rfr = RandomForestRegressor(n_estimators=200, random_state=17, max_depth=7)
-gbr = GradientBoostingRegressor(max_depth=8,random_state=17,n_estimators=50,learning_rate=0.1)
+gbr = GradientBoostingRegressor(max_depth=7,random_state=17,n_estimators=250,learning_rate=0.1)
 
 #Which regressor is being used IMPORTANT *****
-regressor = rfr
+regressor = gbr
 #%% Test and analysis
 
 # Train the model

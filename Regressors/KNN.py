@@ -24,7 +24,7 @@ X = MovieData[['actor_1', 'actor_2', 'actor_3', 'director', 'genre_1', 'genre_2'
 y = MovieData['rating']
 
 # Feature selection
-selector = SelectKBest(f_regression, k=10)
+selector = SelectKBest(f_regression, k=11)
 X = selector.fit_transform(X, y)
 
 # Split data into training and testing sets
