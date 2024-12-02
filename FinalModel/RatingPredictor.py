@@ -14,7 +14,7 @@ from sklearn.feature_selection import SelectKBest, f_regression
 import pickle
 
 # Load the trained final model
-model_path = "C:/Homework Assignments/MachineLearning548/Final Project/TrainedModels/final_model.pkl"
+model_path = "C:/Homework Assignments/MachineLearning548/Final Project/PythonCode/FinalModel/FinalModel.pkl"
 with open(model_path, 'rb') as file:
     final_model = pickle.load(file)
 
@@ -69,13 +69,13 @@ for i in range(1, 5):  # Prompt for up to 4 studios
 # Combine all inputs into a feature array
 input_features = np.array(actors + [director_encoded] + genres + studios).reshape(1, -1)
 
-# Feature selection (ensure the same features were used in training)
-selector = SelectKBest(f_regression, k=11)
-selector.fit(input_features, input_features)  # Fit on input to match selector shape
-input_features = selector.transform(input_features)
+# # Feature selection (ensure the same features were used in training)
+# selector = SelectKBest(f_regression, k=11)
+# selector.fit(input_features, input_features)  # Fit on input to match selector shape
+# input_features = selector.transform(input_features)
 
 # Predict rating
-predicted_log_rating = final_model.predict(input_features)
-predicted_rating = 10 ** predicted_log_rating  # Inverse log transformation
+predicted_rating = final_model.predict(input_features)
+# predicted_rating = 10 ** predicted_log_rating  # Inverse log transformation
 
 print(f"\nPredicted Rating: {predicted_rating[0]:.2f}")
