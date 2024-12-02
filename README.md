@@ -44,3 +44,15 @@ Up to 42093 all good
 - Then went into splitting values into separate columns. This is in order to keep the code somewhat simple. So now we have actor_1,actor_2,actor_3 etc. This is fine it just affects the model somewhat since now if you put an Actor in for actor_1 its not universally checking all three actor columns. 
 
 - Had to encode Director, Actor, Genre, and Studio to be numerical values. This way the ml model can actually interpret this data instead of strings that it wouldn't be able to understand
+
+-From here we began to do hyperparameter tuning for the Linear, Knn, Rfr and GBR models
+
+- Once hyperparameters were chosen the regressors were then tested for Expected vs Predicted values in order to determine which Regressor is performing best for the given dataset. GBR was chosen. Any hyperparameters not listed are assumed to be default values
+- LNR - No Hyperparameters
+- KNN- 10 Neighbors
+- RFR - 200 estimators and a depth of 7
+- GBR - 250 Estimators, depth of 7, and a lr of 0.1
+
+- After finding GBR to be our best regressor we had to build the code that will take a users input and give them a Letterboxed rating in return.
+
+- The code asks for a USer to give an appropiate amount of Actors, Director, Genres and Studios. Then from there it will run the given parameters through the model using a pickle file. Then from there it will output the estimated rating
