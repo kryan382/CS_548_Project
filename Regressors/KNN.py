@@ -24,7 +24,7 @@ X = MovieData[['actor_1', 'actor_2', 'actor_3', 'director', 'genre_1', 'genre_2'
 y = MovieData['rating']
 
 # Feature selection
-selector = SelectKBest(f_regression, k=10)
+selector = SelectKBest(f_regression, k=11)
 X = selector.fit_transform(X, y)
 
 # Split data into training and testing sets
@@ -64,7 +64,7 @@ trial = 0
 a_20values = []
 mae_values = []
 #%% Test
-for neighbor in range(1,26):
+for neighbor in range(1,41):
     knn = KNeighborsRegressor(n_neighbors=neighbor, weights='distance')
     cv_scores = RepeatedKFold(n_splits=5, n_repeats = 3, random_state = 8)
     Accuracy_Values = cross_val_score(knn, X_train, y_train, cv = cv_scores, scoring = custom_Scoring)
@@ -94,13 +94,13 @@ for neighbor in range(1,26):
     
 #%% Export
 #MAPE
-df_metrics = pd.DataFrame(mape_values, index=range(1, 26), columns=range(1, 16))   
+df_metrics = pd.DataFrame(mape_values, index=range(1, 41), columns=range(1, 16))   
 
 #MAE
-df_metricsMAE = pd.DataFrame(mae_values, index=range(1, 26), columns=range(1, 16))   
+df_metricsMAE = pd.DataFrame(mae_values, index=range(1, 41), columns=range(1, 16))   
 
 #A20
-df_metricsA20 = pd.DataFrame(a_20values, index=range(1, 26), columns=range(1, 16))   
+df_metricsA20 = pd.DataFrame(a_20values, index=range(1, 41), columns=range(1, 16))   
     
 file_path = "C:/spydertest/csv/CumulRot.xlsx"
 

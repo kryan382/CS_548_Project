@@ -29,6 +29,8 @@ MovieData = pd.read_csv(file_path)
 X = MovieData[['actor_1', 'actor_2', 'actor_3', 'director', 'genre_1', 'genre_2', 'genre_3', 'studio_1', 'studio_2', 'studio_3', 'studio_4']]
 y = MovieData['rating']  
 
+y=np.log10(y)
+
 # Feature selection
 selector = SelectKBest(f_regression, k=11)
 X = selector.fit_transform(X, y)
@@ -38,12 +40,12 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_
 #%% Regressors
 
 lnr = LinearRegression()
-knn = KNeighborsRegressor(n_neighbors=4, weights='distance')
-rfr = RandomForestRegressor(n_estimators=25, random_state=17, max_depth=9)
-gbr = GradientBoostingRegressor(max_depth=8,random_state=17,n_estimators=50,learning_rate=0.1)
+knn = KNeighborsRegressor(n_neighbors=10, weights='distance')
+rfr = RandomForestRegressor(n_estimators=200, random_state=17, max_depth=7)
+gbr = GradientBoostingRegressor(max_depth=7,random_state=17,n_estimators=250,learning_rate=0.1)
 
 #Which regressor is being used IMPORTANT *****
-regressor = lnr
+regressor = gbr
 #%% Test and analysis
 
 # Train the model
@@ -52,8 +54,8 @@ regressor.fit(X_train, y_train)
 # Make predictions
 y_pred = regressor.predict(X_test)
 
-# y_test = 10 ** y_test 
-# y_pred = 10 ** y_pred 
+y_test = 10 ** y_test 
+y_pred = 10 ** y_pred 
 
 #RSME Calculations
 def rsm_error(actual,predicted):
