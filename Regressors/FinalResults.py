@@ -30,7 +30,7 @@ X = MovieData[['actor_1', 'actor_2', 'actor_3', 'director', 'genre_1', 'genre_2'
 y = MovieData['rating']  
 
 # Feature selection
-selector = SelectKBest(f_regression, k=10)
+selector = SelectKBest(f_regression, k=11)
 X = selector.fit_transform(X, y)
 
 # Split data into training and testing sets
@@ -75,11 +75,12 @@ custom_Scoring3 = make_scorer(Accuracy_score3,greater_is_better=True)
 #%% Regressors
 
 lnr = LinearRegression()
-knn = KNeighborsRegressor(n_neighbors=4, weights='distance')
-rfr = RandomForestRegressor(n_estimators=25, random_state=17, max_depth=9)
+knn = KNeighborsRegressor(n_neighbors=10, weights='distance')
+rfr = RandomForestRegressor(n_estimators=200, random_state=17, max_depth=7)
+gbr = GradientBoostingRegressor(max_depth=7,random_state=17,n_estimators=250,learning_rate=0.1)
 
 #Which regressor is being used IMPORTANT *****
-regressor = lnr
+regressor = gbr
 #%% MAPE
 
 cv_scores = RepeatedKFold(n_splits=5, n_repeats = 3, random_state = 8)
@@ -131,7 +132,14 @@ elif regressor == knn:
     with pd.ExcelWriter(file_path, mode='a', engine='openpyxl') as writer:
         df_metrics.to_excel(writer, sheet_name='KNNFinalMape', index=False, startrow=0, startcol=0)
         df_metricsMAE.to_excel(writer, sheet_name='KNNFinalMAE', index=False, startrow=0, startcol=0)
-        df_metricsa20.to_excel(writer, sheet_name='KNNFinalA20', index=False, startrow=0, startcol=0)    
+        df_metricsa20.to_excel(writer, sheet_name='KNNFinalA20', index=False, startrow=0, startcol=0)   
+        
+elif regressor == gbr:
+    #Export the DataFrame to an Excel file on a specific sheet
+    with pd.ExcelWriter(file_path, mode='a', engine='openpyxl') as writer:
+        df_metrics.to_excel(writer, sheet_name='GBRFinalMape', index=False, startrow=0, startcol=0)
+        df_metricsMAE.to_excel(writer, sheet_name='GBRFinalMAE', index=False, startrow=0, startcol=0)
+        df_metricsa20.to_excel(writer, sheet_name='GBRFinalA20', index=False, startrow=0, startcol=0)  
     
 else:
     #Export the DataFrame to an Excel file on a specific sheet

@@ -74,8 +74,13 @@ input_features = np.array(actors + [director_encoded] + genres + studios).reshap
 # selector.fit(input_features, input_features)  # Fit on input to match selector shape
 # input_features = selector.transform(input_features)
 
-# Predict rating
-predicted_rating = final_model.predict(input_features)
-# predicted_rating = 10 ** predicted_log_rating  # Inverse log transformation
+if all(actor == 0 for actor in actors) and director_encoded == 0 and all(genre == 0 for genre in genres) and all(studio == 0 for studio in studios):
+    print("\nNo input parameters provided. Please provide at least one input.")
+else:
+    # Combine all inputs into a feature array
+    input_features = np.array(actors + [director_encoded] + genres + studios).reshape(1, -1)
 
-print(f"\nPredicted Rating: {predicted_rating[0]:.2f}")
+    # Predict rating
+    predicted_rating = final_model.predict(input_features)
+    print(f"\nPredicted Rating: {predicted_rating[0]:.2f}")
+
