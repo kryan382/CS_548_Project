@@ -6,7 +6,7 @@ from keras.models import Sequential
 from keras.layers import Dense, Conv1D, Flatten, Dropout
 from keras.optimizers import RMSprop
 from keras.callbacks import EarlyStopping
-from keras.metrics import MeanAbsoluteError
+from keras.metrics import MeanAbsoluteError, MeanAbsolutePercentageError
 import tensorflow as tf
 
 #%% Load Dataset
@@ -53,7 +53,6 @@ Dense layer units: 96
 Dropout rate: 0.2
 Learning rate: 0.001
 Optimizer: rmsprop
-
 """
 
 #%% Build the CNN Model
@@ -66,10 +65,14 @@ model = Sequential([
     Dense(1)
 ])
 
-# Compile the model
+# Compile the model with MAPE added as a metric
 model.compile(optimizer=RMSprop(learning_rate=0.001), 
               loss='mean_squared_error', 
-              metrics=['mean_absolute_error', a_20_accuracy])
+              metrics=[
+                  'mean_absolute_error',  # MAE
+                  MeanAbsolutePercentageError(),  # MAPE
+                  a_20_accuracy  # Custom metric
+              ])
 
 #%% Train the Model
 early_stopping = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
@@ -83,14 +86,14 @@ history = model.fit(
 )
 
 #%% Evaluate the Model
-train_loss, train_mae, train_a20 = model.evaluate(X_train, y_train)
-test_loss, test_mae, test_a20 = model.evaluate(X_test, y_test)
+train_loss, train_mae, train_mape, train_a20 = model.evaluate(X_train, y_train)
+test_loss, test_mae, test_mape, test_a20 = model.evaluate(X_test, y_test)
 
-print(f"Training Loss: {train_loss:.4f}, Training MAE: {train_mae:.4f}, Training a_20: {train_a20:.4f}")
-print(f"Testing Loss: {test_loss:.4f}, Testing MAE: {test_mae:.4f}, Testing a_20: {test_a20:.4f}")
+print(f"Training Loss: {train_loss:.4f}, Training MAE: {train_mae:.4f}, Training MAPE: {train_mape:.2f}%, Training a_20: {train_a20:.4f}")
+print(f"Testing Loss: {test_loss:.4f}, Testing MAE: {test_mae:.4f}, Testing MAPE: {test_mape:.2f}%, Testing a_20: {test_a20:.4f}")
 
 #%% Save Model and Metrics
-model.save("movie_cnn_model_with_a20.h5")
+model.save("movie_cnn_model_with_a20_and_mape.h5")
 
 metrics_df = pd.DataFrame({
     "epoch": range(1, len(history.history['loss']) + 1),
@@ -98,9 +101,11 @@ metrics_df = pd.DataFrame({
     "val_loss": history.history['val_loss'],
     "train_mae": history.history['mean_absolute_error'],
     "val_mae": history.history['val_mean_absolute_error'],
+    "train_mape": history.history['mean_absolute_percentage_error'],
+    "val_mape": history.history['val_mean_absolute_percentage_error'],
     "train_a20": history.history['a_20_accuracy'],
     "val_a20": history.history['val_a_20_accuracy']
 })
 
-metrics_df.to_csv("cnn_training_metrics_with_a20.csv", index=False)
+metrics_df.to_csv("cnn_training_metrics_with_a20_and_mape.csv", index=False)
 print("Model and metrics saved!")
